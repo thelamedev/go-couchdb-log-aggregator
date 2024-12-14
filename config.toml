@@ -1,0 +1,10 @@
+[app]
+name = "GoUnstable"
+desc = ""
+addr = ":6588"
+
+[couchdb]
+user = "admin"
+password = "admin1234"
+url = "http://admin:admin1234@localhost:5984"
+db = "logs"
