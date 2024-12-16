@@ -18,6 +18,7 @@ type IngestionServer struct {
 
 func NewIngestionServer(config AppConfig, db *kivik.DB) *IngestionServer {
 	sv := http.NewServeMux()
+
 	return &IngestionServer{
 		ServeMux:  sv,
 		Config:    config,
@@ -41,7 +42,6 @@ func (s *IngestionServer) Prepare() {
 	})
 
 	s.HandleFunc("POST /ingest/json", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Ingesting log")
 		var body map[string]any
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
@@ -50,10 +50,12 @@ func (s *IngestionServer) Prepare() {
 
 		_, _, err := s.Db.CreateDoc(r.Context(), body)
 		if err != nil {
+			log.Printf("[ERROR] Failed to add entry: %s\n", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
+		log.Printf("[INFO] Log entry with level %s added\n", body["level"])
 		w.WriteHeader(http.StatusCreated)
 	})
 

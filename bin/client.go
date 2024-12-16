@@ -68,8 +68,9 @@ func sendLog() {
 
 func main() {
 	wg := sync.WaitGroup{}
+	COUNT := 100
 
-	for range 20 {
+	for range COUNT {
 		go func() {
 			wg.Add(1)
 			defer wg.Done()
